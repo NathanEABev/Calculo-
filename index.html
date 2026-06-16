@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulador de Cofrinhos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+      box-sizing: border-box;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .resultado {
+      margin-top: 20px;
+      padding: 15px;
+      background: white;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Simulador de Cofrinhos</h1>
+
+  <label>Cofrinho principal atual:</label>
+  <input type="number" id="principal" value="656.03">
+
+  <label>Cofrinho secundário atual:</label>
+  <input type="number" id="secundario" value="1241.61">
+
+  <label>Salário semanal:</label>
+  <input type="number" id="salario" value="560">
+
+  <label>Despesas mensais fixas:</label>
+  <input type="number" id="despesas" value="212">
+
+  <label>Despesas extras futuras:</label>
+  <input type="number" id="extrasDespesas" value="294.79">
+
+  <label>Extras prováveis de receber:</label>
+  <input type="number" id="extrasReceber" value="0">
+
+  <label>Limite base do banco/app:</label>
+  <input type="number" id="limiteBase" value="200">
+
+  <label>% do salário para o cofrinho principal:</label>
+  <input type="number" id="percentPrincipal" value="28">
+
+  <label>% do salário para o cofrinho secundário:</label>
+  <input type="number" id="percentSecundario" value="12">
+
+  <button onclick="calcular()">Calcular estimativa</button>
+
+  <div class="resultado" id="resultado"></div>
+
+  <script>
+    function calcular() {
+      let principal = Number(document.getElementById("principal").value);
+      let secundario = Number(document.getElementById("secundario").value);
+      let salario = Number(document.getElementById("salario").value);
+      let despesasMensais = Number(document.getElementById("despesas").value);
+      let extrasDespesas = Number(document.getElementById("extrasDespesas").value);
+      let extrasReceber = Number(document.getElementById("extrasReceber").value);
+      let limiteBase = Number(document.getElementById("limiteBase").value);
+      let percentPrincipal = Number(document.getElementById("percentPrincipal").value) / 100;
+      let percentSecundario = Number(document.getElementById("percentSecundario").value) / 100;
+
+      let data = new Date();
+
+      let aportePrincipal = salario * percentPrincipal;
+      let aporteSecundario = salario * percentSecundario;
+
+      // Converte despesas mensais para impacto semanal aproximado
+      let despesasSemanais = despesasMensais / 4.345;
+
+      // Extras líquidos entram no principal
+      principal += extrasReceber - extrasDespesas;
+
+      let semanas = 0;
+      let meta = secundario * (7 / 3) + limiteBase;
+
+      while (principal < meta && semanas < 300) {
+        semanas++;
+
+        principal += aportePrincipal;
+        secundario += aporteSecundario;
+
+        // gasto mensal fixo reduz o principal de forma semanal aproximada
+        principal -= despesasSemanais;
+
+        meta = secundario * (7 / 3) + limiteBase;
+      }
+
+      data.setDate(data.getDate() + semanas * 7);
+
+      let resultado = document.getElementById("resultado");
+
+      resultado.innerHTML = `
+        <h2>Resultado</h2>
+        <p><strong>Semanas estimadas:</strong> ${semanas}</p>
+        <p><strong>Data estimada:</strong> ${data.toLocaleDateString("pt-BR")}</p>
+        <p><strong>Cofrinho principal final:</strong> R$ ${principal.toFixed(2)}</p>
+        <p><strong>Cofrinho secundário final:</strong> R$ ${secundario.toFixed(2)}</p>
+        <p><strong>Meta final:</strong> R$ ${meta.toFixed(2)}</p>
+        <p><strong>Sobra aproximada:</strong> R$ ${(principal - meta).toFixed(2)}</p>
+      `;
+    }
+  </script>
+
+</body>
+</html>
