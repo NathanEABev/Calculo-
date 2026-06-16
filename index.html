@@ -82,6 +82,8 @@
 
   <script>
     function calcular() {
+      salvarDados();
+      
       let principal = Number(document.getElementById("principal").value);
       let secundario = Number(document.getElementById("secundario").value);
       let salario = Number(document.getElementById("salario").value);
@@ -132,6 +134,28 @@
         <p><strong>Sobra aproximada:</strong> R$ ${(principal - meta).toFixed(2)}</p>
       `;
     }
+
+    function salvarDados() {
+    const inputs = document.querySelectorAll("input");
+
+    inputs.forEach(input => {
+        localStorage.setItem(input.id, input.value);
+    });
+}
+
+function carregarDados() {
+    const inputs = document.querySelectorAll("input");
+
+    inputs.forEach(input => {
+        const valorSalvo = localStorage.getItem(input.id);
+
+        if (valorSalvo !== null) {
+            input.value = valorSalvo;
+        }
+    });
+}
+
+    document.addEventListener("DOMContentLoaded", carregarDados);
   </script>
 
 </body>
