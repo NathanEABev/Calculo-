@@ -106,7 +106,7 @@
       principal += extrasReceber - extrasDespesas;
 
       let semanas = 0;
-      let meta = secundario * (7 / 3) + limiteBase;
+      let meta = secundario * (8 / 5) + limiteBase;
 
       while (principal < meta && semanas < 300) {
         semanas++;
@@ -117,7 +117,7 @@
         // gasto mensal fixo reduz o principal de forma semanal aproximada
         principal -= despesasSemanais;
 
-        meta = secundario * (7 / 3) + limiteBase;
+        meta = secundario * (8 / 5) + limiteBase;
       }
 
       data.setDate(data.getDate() + semanas * 7);
